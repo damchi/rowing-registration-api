@@ -1,0 +1,12 @@
+version: '2'
+services:
+  # The Application
+  app:
+    build: .
+    restart: always
+    image: rowing-registration-api
+    container_name: cn_rowing-registration-api
+    volumes:
+      - .env:/go/src/rowing-club-registration.env
+    ports:
+      - "8397:8397"
