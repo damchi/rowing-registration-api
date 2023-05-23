@@ -28,9 +28,9 @@ func InitMysqlGorm(cfg Config) (*gorm.DB, error) {
 
 	var databaseUrlFormat string
 	if cfg.SslEnabled {
-		databaseUrlFormat = "%s:%s@tcp(%s:%d)/%s?tls=skip-verify"
+		databaseUrlFormat = "%s:%s@tcp(%s:%d)/%s?tls=skip-verify&parseTime=True"
 	} else {
-		databaseUrlFormat = "%s:%s@tcp(%s:%d)/%s"
+		databaseUrlFormat = "%s:%s@tcp(%s:%d)/%s&parseTime=True"
 	}
 
 	databaseUrl := fmt.Sprintf(databaseUrlFormat, cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Schema)
