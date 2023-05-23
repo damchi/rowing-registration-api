@@ -10,6 +10,7 @@ import (
 	"rowing-registation-api/api"
 	"rowing-registation-api/pkg/logger"
 	mysqlgorm "rowing-registation-api/pkg/mysql-gorm"
+	"rowing-registation-api/pkg/translator"
 	"strconv"
 	"time"
 )
@@ -25,6 +26,11 @@ func main() {
 		log.Fatal(logger.ERROR, fmt.Sprintf("Fail to connect to gor Mysql: %v", err))
 		return
 	}
+
+	transConfig := translator.Config{
+		TranslationFolder: "data/translations",
+	}
+	translator.InitTranslator(transConfig)
 
 	startWebServer()
 }
