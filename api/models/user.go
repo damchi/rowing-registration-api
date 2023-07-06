@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"rowing-registation-api/pkg/jwt"
 	"rowing-registation-api/pkg/logger"
 	mysqlgorm "rowing-registation-api/pkg/mysql-gorm"
 	"strings"
@@ -52,7 +53,11 @@ func (m UserManager) Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
-func (m UserManager) LoadFromParam(param ClubRegistrationParam) (User, error) {
+func (m UserManager) VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func (m UserManager) CreateUser(param ClubRegistrationParam) (User, error) {
 	var user User
 	hashedPassword, err := m.Hash(param.Password)
 	if err != nil {
@@ -66,4 +71,29 @@ func (m UserManager) LoadFromParam(param ClubRegistrationParam) (User, error) {
 	user.Role.ID = ClubOwner
 
 	return user, nil
+}
+
+func (m UserManager) Login(param UserLoginParam) (*User, string, error) {
+
+	var user *User
+	var err error
+
+	user, err = m.FindByEmail(param.Email)
+	if err != nil {
+		logger.Log(logger.ERROR, fmt.Sprintf("Fail to retrieve user: %v", err))
+		return user, "", err
+	}
+	err = m.VerifyPassword(user.Password, param.Password)
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		logger.Log(logger.ERROR, fmt.Sprintf("Invalid Password: %v", err))
+		return user, "", err
+	}
+	token, err := jwt.CreateToken(uint64(user.ID))
+
+	if err != nil {
+		logger.Log(logger.ERROR, fmt.Sprintf("Fail Creating token: %v", err))
+		return user, "", err
+	}
+
+	return user, token, nil
 }

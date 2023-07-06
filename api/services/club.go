@@ -27,11 +27,11 @@ func GetClubService(ctx context.Context, db *gorm.DB) ClubService {
 }
 
 func (cs ClubService) SaveClub(param models.ClubRegistrationParam) (int64, error) {
-	user, err := cs.UserManager.LoadFromParam(param)
+	user, err := cs.UserManager.CreateUser(param)
 	if err != nil {
 		return 0, err
 	}
-	address, err := cs.AddressManager.LoadFromParam(param)
+	address, err := cs.AddressManager.CreateAddress(param)
 	club := models.Club{
 		Name:    strings.Trim(param.ClubName, " "),
 		Phone:   strings.Trim(param.Phone, " "),

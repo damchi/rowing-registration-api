@@ -33,3 +33,7 @@ func (us UserService) FindByEmail(email string) bool {
 	}
 	return false
 }
+
+func (us UserService) LoginUser(param models.UserLoginParam) (*models.User, string, error) {
+	return us.UserManager.Login(param)
+}

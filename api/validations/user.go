@@ -10,13 +10,6 @@ import (
 	"strings"
 )
 
-const (
-	OCCUPATION_CONSUMER = "consumer"
-	OCCUPATION_OWNER    = "owner"
-	OCCUPATION_MANAGER  = "manager"
-	OCCUPATION_EMPLOYEE = "employee"
-)
-
 type CreateClubError struct {
 	HasError       bool   `json:"-"`
 	FirstName      string `json:"first_name,omitempty"`
@@ -32,6 +25,12 @@ type CreateClubError struct {
 	AddressState   string `json:"address_state,omitempty"`
 	PostCode       string `json:"post_code,omitempty"`
 	Phone          string `json:"phone,omitempty"`
+}
+
+type LoginUserError struct {
+	HasError bool   `json:"-"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 func CreateClubValidation(ctx context.Context, c models.ClubRegistrationParam, lang string) CreateClubError {
@@ -172,6 +171,21 @@ func CreateClubValidation(ctx context.Context, c models.ClubRegistrationParam, l
 	if !validatePassword(c.Password) {
 		err.HasError = true
 		err.Password = translator.Trans("weakPassword", lang, map[string]interface{}{"Field": "password"})
+	}
+
+	return err
+}
+
+func LoginUserValidation(u models.UserLoginParam, lang string) LoginUserError {
+	err := LoginUserError{}
+
+	if len(u.Email) == 0 {
+		err.HasError = true
+		err.Email = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "email"})
+	}
+	if len(u.Password) == 0 {
+		err.HasError = true
+		err.Password = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "password"})
 	}
 
 	return err

@@ -34,7 +34,7 @@ func GetAddressManager(ctx context.Context, db *gorm.DB) AddressManager {
 	return AddressManager{mysqlgorm.GetConnection(), ctx}
 }
 
-func (m AddressManager) LoadFromParam(param ClubRegistrationParam) (Address, error) {
+func (m AddressManager) CreateAddress(param ClubRegistrationParam) (Address, error) {
 	var address Address
 
 	address.Address1 = strings.Trim(param.Address1, " ")

@@ -16,3 +16,8 @@ type ClubRegistrationParam struct {
 	PostCode       string `gorm:"size:100;not null;" json:"post_code"`
 	Phone          string `gorm:"size:100;not null;" json:"phone"`
 }
+
+type UserLoginParam struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
