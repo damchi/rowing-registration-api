@@ -5,6 +5,7 @@ import (
 	"rowing-registation-api/api/middlewares"
 	"rowing-registation-api/api/routes/club"
 	"rowing-registation-api/api/routes/health"
+	"rowing-registation-api/api/routes/user"
 )
 
 func RegisterRoutes(r *gin.Engine) {
@@ -15,5 +16,6 @@ func RegisterRoutes(r *gin.Engine) {
 		api.GET("/health/report", health.CheckHealthReport)
 
 		api.POST("/register-club", middlewares.Language(), club.RegisterClub)
+		api.POST("/register-user", middlewares.Language(), user.RegisterUser)
 	}
 }

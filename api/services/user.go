@@ -33,3 +33,13 @@ func (us UserService) FindByEmail(email string) bool {
 	}
 	return false
 }
+
+func (us UserService) SaveUser(param models.User) (int64, error) {
+
+	result, err := us.UserManager.SaveUser(param)
+	if err != nil {
+		return 0, err
+	}
+
+	return result, nil
+}

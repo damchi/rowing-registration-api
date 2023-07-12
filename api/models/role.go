@@ -9,6 +9,7 @@ import (
 const ClubOwner = 1
 const Coach = 2
 const Athelete = 3
+const Customer = 4
 
 type Role struct {
 	gorm.Model
