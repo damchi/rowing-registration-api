@@ -14,9 +14,9 @@ type User struct {
 	gorm.Model
 	Role      Role `json:"role"`
 	RoleId    uint64
-	FirstName string `gorm:"size:255;not null;" json:"first_name"`
-	LastName  string `gorm:"size:255;not null;" json:"last_name"`
-	Email     string `gorm:"size:100;not null;unique" json:"email"`
+	FirstName string `gorm:"size:255;not null;" json:"first_name" validate:"alphaunicode"`
+	LastName  string `gorm:"size:255;not null;" json:"last_name" validate:"alphaunicode"`
+	Email     string `gorm:"size:100;not null;unique" json:"email" validate:"email"`
 	Password  string `gorm:"size:100;not null;" json:"password"`
 }
 
@@ -46,6 +46,24 @@ func (m UserManager) FindByEmail(email string) (*User, error) {
 		return nil, result.Error
 	}
 	return &user, nil
+}
+
+func (m UserManager) SaveUser(user User) (int64, error) {
+
+	user.RoleId = Customer
+	hashedPassword, err := m.Hash(user.Password)
+	user.Password = string(hashedPassword)
+	if err != nil {
+		logger.Log(logger.ERROR, fmt.Sprintf("RegisterClub Failed Hash Password: %v", err))
+		return 0, err
+	}
+	result := m.db.Create(&user)
+
+	if result.Error != nil {
+		logger.Log(logger.ERROR, fmt.Sprintf("Save User : %v", result.Error))
+		return 0, result.Error
+	}
+	return result.RowsAffected, nil
 }
 
 func (m UserManager) Hash(password string) ([]byte, error) {
