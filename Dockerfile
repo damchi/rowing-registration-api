@@ -17,7 +17,8 @@ ENV APP_PATH="$GOPATH/src/rowing-registration-api"
 RUN mkdir -p $APP_PATH
 
 WORKDIR $APP_PATH
-COPY --from=firstbuildstage $APP_PATH/rowing-club-api $APP_PATH
+COPY --from=firstbuildstage $APP_PATH/rowing-registration-api $APP_PATH
+COPY --from=firstbuildstage $APP_PATH/data/translations/en.toml $APP_PATH/data/translations/en.toml
 
 # Define entrypoint and port
 ENV PORT=8397
