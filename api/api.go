@@ -17,5 +17,6 @@ func RegisterRoutes(r *gin.Engine) {
 
 		api.POST("/register-club", middlewares.Language(), club.RegisterClub)
 		api.POST("/login", middlewares.Language(), user.Login)
+		api.POST("/register-user", middlewares.Language(), user.RegisterUser)
 	}
 }

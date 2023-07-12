@@ -26,6 +26,13 @@ type CreateClubError struct {
 	PostCode       string `json:"post_code,omitempty"`
 	Phone          string `json:"phone,omitempty"`
 }
+type CreateUserError struct {
+	HasError  bool   `json:"-"`
+	FirstName string `json:"first_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"password,omitempty"`
+}
 
 type LoginUserError struct {
 	HasError bool   `json:"-"`
@@ -166,6 +173,58 @@ func CreateClubValidation(ctx context.Context, c models.ClubRegistrationParam, l
 			err.HasError = true
 			err.PostCode = translator.Trans("fieldIsNotValid", lang, map[string]interface{}{"Field": "post_code"})
 		}
+	}
+
+	if !validatePassword(c.Password) {
+		err.HasError = true
+		err.Password = translator.Trans("weakPassword", lang, map[string]interface{}{"Field": "password"})
+	}
+
+	return err
+}
+
+func CreateUserValidation(ctx context.Context, c models.User, lang string) CreateUserError {
+	err := CreateUserError{}
+
+	if len(strings.Trim(c.FirstName, " ")) == 0 {
+		err.HasError = true
+		err.FirstName = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "first_name"})
+	} else {
+		regxName := regexp.MustCompile(constants.RegexName)
+		if !regxName.MatchString(c.FirstName) {
+			err.HasError = true
+			err.FirstName = translator.Trans("fieldIsNotValid", lang, map[string]interface{}{"Field": "first_name"})
+		}
+	}
+
+	if len(strings.Trim(c.LastName, " ")) == 0 {
+		err.HasError = true
+		err.LastName = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "last_name"})
+	} else {
+		regxName := regexp.MustCompile(constants.RegexName)
+		if !regxName.MatchString(c.LastName) {
+			err.HasError = true
+			err.LastName = translator.Trans("fieldIsNotValid", lang, map[string]interface{}{"Field": "last_name"})
+		}
+	}
+
+	if len(c.Email) > 0 {
+		Re := regexp.MustCompile(constants.RegexEmail)
+		if !Re.MatchString(c.Email) {
+			err.HasError = true
+			err.Email = translator.Trans("emailNotValid", lang, nil)
+		} else {
+
+			hasEmail := services.GetUserService(ctx, nil).FindByEmail(c.Email)
+			if hasEmail {
+				err.HasError = true
+				err.Email = translator.Trans("emailAlreadyUsed", lang, nil)
+			}
+
+		}
+	} else {
+		err.HasError = true
+		err.Email = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "email"})
 	}
 
 	if !validatePassword(c.Password) {
