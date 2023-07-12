@@ -34,6 +34,12 @@ type CreateUserError struct {
 	Password  string `json:"password,omitempty"`
 }
 
+type LoginUserError struct {
+	HasError bool   `json:"-"`
+	Email    string `json:"email,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
 func CreateClubValidation(ctx context.Context, c models.ClubRegistrationParam, lang string) CreateClubError {
 	err := CreateClubError{}
 
@@ -224,6 +230,21 @@ func CreateUserValidation(ctx context.Context, c models.User, lang string) Creat
 	if !validatePassword(c.Password) {
 		err.HasError = true
 		err.Password = translator.Trans("weakPassword", lang, map[string]interface{}{"Field": "password"})
+	}
+
+	return err
+}
+
+func LoginUserValidation(u models.UserLoginParam, lang string) LoginUserError {
+	err := LoginUserError{}
+
+	if len(u.Email) == 0 {
+		err.HasError = true
+		err.Email = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "email"})
+	}
+	if len(u.Password) == 0 {
+		err.HasError = true
+		err.Password = translator.Trans("fieldIsMissing", lang, map[string]interface{}{"Field": "password"})
 	}
 
 	return err

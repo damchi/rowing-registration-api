@@ -43,3 +43,7 @@ func (us UserService) SaveUser(param models.User) (int64, error) {
 
 	return result, nil
 }
+
+func (us UserService) LoginUser(param models.UserLoginParam) (*models.User, string, error) {
+	return us.UserManager.Login(param)
+}
