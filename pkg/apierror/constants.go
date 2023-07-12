@@ -3,10 +3,12 @@ package apierror
 const (
 	MsgRouteAccessNotAllowed = "routeAccessNotAllowed"
 
-	MsgValidationFailed = "validationFailed"
-	MsgInsertionFailed  = "insertionFailed"
-	MsgTokenRefNotfound = "tokenRefNotFound"
-	MsgEmailAlreadyUsed = "emailAlreadyUsed"
+	MsgValidationFailed   = "validationFailed"
+	MsgInsertionFailed    = "insertionFailed"
+	MsgTokenRefNotfound   = "tokenRefNotFound"
+	MsgEmailAlreadyUsed   = "emailAlreadyUsed"
+	MsgValidJsonBody      = "invalidJsonBody"
+	MsgCredentialNotValid = "credentialNotValid"
 
 	CodeRouteAccessNotAllowed = 403000
 	CodeValidationFailed      = 400001

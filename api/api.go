@@ -16,6 +16,7 @@ func RegisterRoutes(r *gin.Engine) {
 		api.GET("/health/report", health.CheckHealthReport)
 
 		api.POST("/register-club", middlewares.Language(), club.RegisterClub)
+		api.POST("/login", middlewares.Language(), user.Login)
 		api.POST("/register-user", middlewares.Language(), user.RegisterUser)
 	}
 }
