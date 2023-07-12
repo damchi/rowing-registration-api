@@ -40,7 +40,7 @@ func GetUserManager(ctx context.Context, db *gorm.DB) UserManager {
 func (m UserManager) FindByEmail(email string) (*User, error) {
 	var user User
 
-	result := m.db.Where("state = ?", 1).Where("email = ?", email).Find(&user)
+	result := m.db.Preload("Role").Where("state = ?", 1).Where("email = ?", email).Find(&user)
 
 	if result.Error != nil {
 		logger.Log(logger.ERROR, fmt.Sprintf("Fail to retrieve user: %v", result.Error))
