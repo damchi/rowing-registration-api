@@ -9,6 +9,7 @@ const (
 	MsgEmailAlreadyUsed   = "emailAlreadyUsed"
 	MsgValidJsonBody      = "invalidJsonBody"
 	MsgCredentialNotValid = "credentialNotValid"
+	MsgLoginFail          = "loginFail"
 
 	CodeRouteAccessNotAllowed = 403000
 	CodeValidationFailed      = 400001

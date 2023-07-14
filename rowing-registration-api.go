@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
@@ -37,6 +38,12 @@ func main() {
 func startWebServer() {
 	r := gin.New()
 	r.Use(gin.Recovery())
+
+	// Configure CORS middleware
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:4200"}
+	config.AllowCredentials = true
+	r.Use(cors.New(config))
 
 	logger.CustomLogFormat(r)
 	api.RegisterRoutes(r)

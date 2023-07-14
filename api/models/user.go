@@ -2,9 +2,11 @@ package models
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"rowing-registation-api/pkg/apierror"
 	"rowing-registation-api/pkg/jwt"
 	"rowing-registation-api/pkg/logger"
 	mysqlgorm "rowing-registation-api/pkg/mysql-gorm"
@@ -100,6 +102,11 @@ func (m UserManager) Login(param UserLoginParam) (*User, string, error) {
 	if err != nil {
 		logger.Log(logger.ERROR, fmt.Sprintf("Fail to retrieve user: %v", err))
 		return user, "", err
+	}
+	if user.ID == 0 {
+		logger.Log(logger.ERROR, fmt.Sprintf("Fail to retrieve user: %v", err))
+		return user, "", errors.New(apierror.MsgLoginFail)
+
 	}
 	err = m.VerifyPassword(user.Password, param.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
